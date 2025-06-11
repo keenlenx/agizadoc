@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  agiza-log:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/app
+    working_dir: /app  # Corrected from .:/app to just /app
+    networks:
+      - agiza-log-net
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    restart: unless-stopped  # Ensures MySQL stays up on failure or reboot
+    environment:
+      MYSQL_ROOT_PASSWORD: yiipass
+      MYSQL_DATABASE: yii2db
+      MYSQL_USER: yiiuser
+      MYSQL_PASSWORD: yiipass
+    ports:
+      - "8081:3306"
+    volumes:
+      - dbdata:/var/lib/mysql  # Persists MySQL data
+    networks:
+      - agiza-log-net
+
+volumes:
+  dbdata:
+
+networks:
+  agiza-log-net:
